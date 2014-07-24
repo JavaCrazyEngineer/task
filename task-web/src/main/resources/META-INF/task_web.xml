@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+	   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd"
+	default-lazy-init="true">
+	<!-- 激活 @Required @Autowired,JSR 250's @PostConstruct, @PreDestroy and @Resource 
+		等标注 -->
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.jscn.platform"
+		annotation-config="true" />
+
+	<mvc:annotation-driven />
+	
+	
+
+	<!-- <aop:aspectj-autoproxy /> -->
+
+	<!-- 对某些静态资源，如css,图片等进行过滤 ,有引用 "/resources/**" 的路径引用转到工程的/resources/目录取资源 -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- freemarker config -->
+	<!-- <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"> 
+		<property name="templateLoaderPath" value="/WEB-INF/freemarker/" /> </bean> -->
+	<!-- View resolvers can also be configured with ResourceBundles or XML files. 
+		If you need different view resolving based on Locale, you have to use the 
+		resource bundle resolver. -->
+	<!-- <bean id="freemarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver"> 
+		<property name="order" value="1" /> <property name="cache" value="true" /> 
+		<property name="prefix" value="" /> <property name="suffix" value=".ftl" 
+		/> </bean> -->
+
+	<!-- 国际化,并且可以批定文件编码,可以使用classpath: 或者WEB-INF/ 前缀 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:/config/messages</value>
+				<value>classpath:ValidationMessages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+	</bean>
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/" />
+			<mvc:mapping path="/index" />
+			<mvc:mapping path="/top" />
+			<mvc:mapping path="/menu" />
+			<mvc:mapping path="/job**/**" />
+			<bean class="com.jscn.platform.task.interceptor.AccessTraceInterceptor">
+				<property name="excludeParams" value="*assword*" />
+			</bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/main/**" />
+			<mvc:mapping path="/job/manager/**" />
+			<mvc:mapping path="/job/log/" />
+			<mvc:mapping path="/job/log/all" />
+			<mvc:mapping path="/job/log/grouplist" />
+			<mvc:mapping path="/job/log/delete" />
+			<mvc:mapping path="/job/log/restart" />
+			<bean class="com.jscn.platform.task.interceptor.LoginInterceptor">
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 统一异常处理 -->
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="order" value="1" />
+		<property name="defaultErrorView">
+			<value>commons/error</value>
+		</property>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.sql.SQLException">commons/error</prop>
+				<prop
+					key="org.springframework.web.multipart.MaxUploadSizeExceededException">commons/error</prop>
+			</props>
+		</property>
+	</bean>
+
+	<import resource="classpath:/META-INF/task_common.xml" />
+
+</beans>

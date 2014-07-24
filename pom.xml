@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.jscn.common</groupId>
+		<artifactId>jscn-commons</artifactId>
+		<version>1.2.6-SNAPSHOT</version>
+	</parent>
+
+
+	<groupId>com.jscn.platform.task</groupId>
+	<artifactId>task-service-parent</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>task-service-parent</name>
+	<description>短信平台服务</description>
+
+	<modules>
+		<module>task-service</module>
+		<module>task-web</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.jscn.platform.task</groupId>
+				<artifactId>task-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.jscn.platform.task</groupId>
+				<artifactId>task-web</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>

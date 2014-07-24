@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jscn.platform.task.dao.TaskLogDAO">
+  <resultMap id="BaseResultMap" type="com.jscn.platform.task.dmo.TaskLog">
+    <id column="LOG_ID" jdbcType="DECIMAL" property="logId" />
+    <result column="TASK_ID" jdbcType="DECIMAL" property="taskId" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="RESULT_DESC" jdbcType="VARCHAR" property="resultDesc" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="condition.taskId != null" >
+         and TASK_ID = #{condition.taskId}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List">
+    LOG_ID, TASK_ID, STATUS, RESULT_DESC, START_TIME, END_TIME
+  </sql>
+  <select id="selectByExample" parameterType="com.jscn.commons.core.mybatis.Criteria" resultMap="BaseResultMap">
+    <include refid="common.Oracle_Pagination_Head" />
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from QUARTZ.TASK_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="common.Oracle_Pagination_Tail" />
+  </select>
+  <select id="selectGroupTaskLog" parameterType="com.jscn.commons.core.mybatis.Criteria" resultMap="BaseResultMap">
+    <include refid="common.Oracle_Pagination_Head" />
+    SELECT T.*
+	  FROM (SELECT LOG_ID,
+	               TASK_ID,
+	               STATUS,
+	               RESULT_DESC,
+	               START_TIME,
+	               END_TIME,
+	               (ROW_NUMBER() OVER(PARTITION BY TASK_ID ORDER BY START_TIME DESC)) AS XH
+	          FROM QUARTZ.TASK_LOG 
+		      <trim prefix="where" prefixOverrides="and|or" >
+			    <if test="condition.taskId != null" >
+			       and TASK_ID = #{condition.taskId}
+			    </if>
+			  </trim>
+			) T
+	 <![CDATA[ WHERE T.XH <= 1  ]]>
+	 <if test="orderByClause != null">
+      order by ${orderByClause}
+     </if>
+    <include refid="common.Oracle_Pagination_Tail" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from QUARTZ.TASK_LOG
+    where LOG_ID = #{logId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from QUARTZ.TASK_LOG
+    where LOG_ID = #{logId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insertSelective" parameterType="com.jscn.platform.task.dmo.TaskLog">
+    <selectKey keyProperty="logId" order="BEFORE" resultType="java.lang.Long">
+      SELECT QUARTZ.SEQ_TASK_LOG_ID.nextval FROM dual
+    </selectKey>
+    insert into QUARTZ.TASK_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        LOG_ID,
+      <if test="taskId != null">
+        TASK_ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="resultDesc != null">
+        RESULT_DESC,
+      </if>
+      <if test="startTime != null">
+        START_TIME,
+      </if>
+      <if test="endTime != null">
+        END_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{logId},
+      <if test="taskId != null">
+        #{taskId,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="resultDesc != null">
+        #{resultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jscn.commons.core.mybatis.Criteria" resultType="java.lang.Integer">
+    select count(1) from QUARTZ.TASK_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="countGroupTaskLogByExample" parameterType="com.jscn.commons.core.mybatis.Criteria" resultType="java.lang.Integer">
+    select count(1) from (select distinct TASK_ID from QUARTZ.TASK_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    )
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jscn.platform.task.dmo.TaskLog">
+    update QUARTZ.TASK_LOG
+    <set>
+      <if test="taskId != null">
+        TASK_ID = #{taskId,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="resultDesc != null">
+        RESULT_DESC = #{resultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LOG_ID = #{logId,jdbcType=DECIMAL}
+  </update>
+</mapper>

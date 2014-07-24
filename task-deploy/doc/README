@@ -1,0 +1,13 @@
+1、在测试数据库中运行tar包的data目录下的两个建表sql脚本
+
+2、修改war包中的/WEB-INF/classes/config/jdbc.properties，修改成测试环境的数据库配置
+
+3、用tar包中的logback.xml替换war包中的/WEB-INF/classes/logback.xml
+
+4、把hello.py放到apache的cgi-bin目录下，并执行dos2unix命令，如下：
+	[root@jscn-File cgi-bin]# dos2unix hello.py
+	[root@jscn-File cgi-bin]# chmod a+x hello.py
+	修改hello.py中的receipt="http://172.20.225.236:8087/"的IP和端口为部署的Task项目的IP和端口
+	可以测试http://yourserver/cgi-bin/hello.py
+
+5、添加定时任务，调用配置好的hello.py链接，cron表达式可以参考http://biaoming.iteye.com/blog/39532

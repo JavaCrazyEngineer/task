@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jscn.platform.task.dao.QuazTriggersDAO">
+	<resultMap id="BaseResultMap" type="com.jscn.platform.task.dmo.QuazTriggers">
+		<result column="TASK_ID" property="taskId" jdbcType="BIGINT" />
+		<result column="TRIGGER_URL" property="triggerUrl" jdbcType="VARCHAR" />
+		<result column="SCHED_NAME" property="schedName" jdbcType="VARCHAR" />
+		<result column="TRIGGER_NAME" property="triggerName" jdbcType="VARCHAR" />
+		<result column="TRIGGER_GROUP" property="triggerGroup"
+			jdbcType="VARCHAR" />
+		<result column="JOB_NAME" property="jobName" jdbcType="VARCHAR" />
+		<result column="JOB_GROUP" property="jobGroup" jdbcType="VARCHAR" />
+		<result column="DESCRIPTION" property="desc" jdbcType="VARCHAR" />
+		<result column="NEXT_FIRE_TIME" property="nextFireTime"
+			jdbcType="BIGINT" />
+		<result column="PREV_FIRE_TIME" property="prevFireTime"
+			jdbcType="BIGINT" />
+		<result column="PRIORITY" property="priority" jdbcType="INTEGER" />
+		<result column="TRIGGER_STATE" property="triggerState"
+			jdbcType="VARCHAR" />
+		<result column="TRIGGER_TYPE" property="triggerType" jdbcType="VARCHAR" />
+		<result column="START_TIME" property="startTime" jdbcType="BIGINT" />
+		<result column="END_TIME" property="endTime" jdbcType="BIGINT" />
+		<result column="CALENDAR_NAME" property="calendarName"
+			jdbcType="VARCHAR" />
+		<result column="MISFIRE_INSTR" property="misfireInstr"
+			jdbcType="VARCHAR" />
+		<result column="CRON_EXPRESSION" property="cronExpression"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Criteria_Where_Clause">
+		<trim prefix="where" prefixOverrides="and|or">
+			b.TRIGGER_NAME=a.TRIGGER_NAME and b.TRIGGER_GROUP=a.TRIGGER_GROUP and
+			c.TRIGGER_NAME=a.TRIGGER_NAME and c.TRIGGER_GROUP=a.TRIGGER_GROUP
+			<if test="condition.triggerName != null">
+       <![CDATA[ and b.TRIGGER_NAME LIKE '%'||#{condition.triggerName}||'%']]>
+			</if>
+			<if test="condition.triggerGroup != null">
+				and b.TRIGGER_GROUP = #{condition.triggerGroup}
+			</if>
+			<if test="condition.taskId != null">
+				and b.TASK_ID = #{condition.taskId}
+			</if>
+		</trim>
+	</sql>
+	<sql id="Base_Column_List">
+		b.TASK_ID as TASK_ID,b.TRIGGER_URL as TRIGGER_URL,
+		a.TRIGGER_NAME as TRIGGER_NAME, a.TRIGGER_GROUP as
+		TRIGGER_GROUP,
+		a.NEXT_FIRE_TIME
+		as NEXT_FIRE_TIME, a.PREV_FIRE_TIME as
+		PREV_FIRE_TIME,
+		a.PRIORITY as PRIORITY,
+		a.TRIGGER_STATE as
+		TRIGGER_STATE, a.TRIGGER_TYPE
+		as TRIGGER_TYPE, a.START_TIME as
+		START_TIME, a.END_TIME as END_TIME,
+		c.CRON_EXPRESSION as CRON_EXPRESSION
+	</sql>
+	<select id="findByCriteria" resultMap="BaseResultMap"
+		parameterType="com.jscn.commons.core.mybatis.Criteria">
+		<include refid="common.Oracle_Pagination_Head" />
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from QRTZ_TRIGGERS a ,TASK_CONFIG b ,QRTZ_CRON_TRIGGERS c
+		<if test="_parameter != null">
+			<include refid="Criteria_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+		<include refid="common.Oracle_Pagination_Tail" />
+	</select>
+	<select id="getQuazTriggerByTriggerNameAndGroup" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from QRTZ_TRIGGERS a,TASK_CONFIG b,QRTZ_CRON_TRIGGERS c where
+		b.TRIGGER_NAME=a.TRIGGER_NAME
+		and b.TRIGGER_GROUP=a.TRIGGER_GROUP and
+		c.TRIGGER_NAME=a.TRIGGER_NAME and c.TRIGGER_GROUP=a.TRIGGER_GROUP and
+		a.TRIGGER_NAME =
+		#{triggerName} and
+		a.TRIGGER_GROUP = #{triggerGroup}
+	</select>
+	<select id="getQuazTriggerByTaskId" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from QRTZ_TRIGGERS a,TASK_CONFIG b,QRTZ_CRON_TRIGGERS c where
+		b.TRIGGER_NAME=a.TRIGGER_NAME
+		and b.TRIGGER_GROUP=a.TRIGGER_GROUP and
+		c.TRIGGER_NAME=a.TRIGGER_NAME and c.TRIGGER_GROUP=a.TRIGGER_GROUP and
+		b.TASK_ID=#{taskId}
+	</select>
+	<select id="countByCriteria" parameterType="com.jscn.commons.core.mybatis.Criteria"
+		resultType="java.lang.Integer">
+		select count(*) from QRTZ_TRIGGERS a,TASK_CONFIG b,QRTZ_CRON_TRIGGERS c
+		<if test="_parameter != null">
+			<include refid="Criteria_Where_Clause" />
+		</if>
+	</select>
+</mapper>

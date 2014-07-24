@@ -1,0 +1,67 @@
+.x-layout-split{
+	background-color:#fff;
+}
+/*.x-layout-collapsed{
+	background-color:#fff;
+}*/
+.menu_top {
+	background-image: url(../images/motree.gif);
+}
+.icon_0010 {
+	background-image: url(../images/icon_1202.gif) !important;
+}
+.icon_0020 {
+	background-image: url(../images/login_win.png) !important;
+}
+.tabs {
+    background-image:url(../images/tabs.gif) !important;
+}
+.tb_title {
+    background-image:url(../images/application_view_list.png) !important;
+}
+.closeTab_title {
+    background-image:url(../images/application.png) !important;
+}
+.closeOtherTab_title {
+    background-image:url(../images/application_double.png) !important;
+}
+.closeAllTab_title {
+    background-image:url(../images/application_cascade.png) !important;
+}
+.cancleTab_title {
+    background-image:url(../images/tbar_synchronize.png) !important;
+}
+.excel_btn {
+    background-image:url(../images/xls.gif) !important;
+}
+.word_btn {
+    background-image:url(../images/rtf.gif) !important;
+}
+.pdf_btn {
+    background-image:url(../images/pdf.gif) !important;
+}
+.add_btn {
+    background-image:url(../images/page_add.png) !important;
+}
+.edit_btn {
+    background-image:url(../images/page_edit_1.png) !important;
+}
+.del_btn {
+    background-image:url(../images/page_del.png) !important;
+}
+.sure_btn {
+    background-image:url(../images/sure.png) !important;
+}
+.cancle_btn {
+    background-image:url(../images/cancle.png) !important;
+}
+.reset_btn {
+    background-image:url(../images/cancle.png) !important;
+}
+.error_btn {
+    background-image:url(../images/alarm.png) !important;
+}
+.search_btn {
+    background-image:url(../images/search.png) !important;
+}
+
